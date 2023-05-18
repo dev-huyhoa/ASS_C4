@@ -61,22 +61,7 @@ namespace ASS_C4.Areas.Admin.Controllers
             }
             return RedirectToAction("Index");
         }
-        //public IActionResult GetId(int idRoles)
-        //{
-        //    var role = _context.Roles.Find(idRoles);
-        //    return Json(role);
-        //}
 
-        //[HttpPost]
-        //public IActionResult Update(Role role)
-        //{
-        //    var result = _context.Roles.Find(role.IdRole);
-        //    result.NameRole = role.NameRole;
-        //    result.Description = role.Description;
-        //    _context.Roles.Update(result);
-        //    _context.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
         [HttpGet]
         public IActionResult Edit(int id)
         {
