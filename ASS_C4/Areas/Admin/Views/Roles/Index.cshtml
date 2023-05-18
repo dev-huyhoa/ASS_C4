@@ -83,12 +83,6 @@
                                     </td>
                                     <td>
                                         <div class="table-data-feature">
-                                            @*       <button class="item"
-                                    data-toggle="modal" data-target="#UpdateModal"
-                                    onclick="UpdateForm(@item.IdRole)"
-                                    data-placement="top" title="Sửa">
-                                    <i class="zmdi zmdi-edit"></i>
-                                    </button>*@
                                             <button class="edit-btn item"
                                                     data-toggle="modal" data-target="#editModal"
                                                     data-id="@item.IdRole"
@@ -161,43 +155,6 @@
     </div>
 </div>
 
-@*<div class="modal fade" id="UpdateModal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="largeModalLabel">Sửa</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="card">
-                    <div class="card-body">
-                        <form id="updateForm" method="post" novalidate="novalidate">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group">
-                                <input class="updateId" type="hidden" name="IdRole" />
-                                <label for="roleName" class="control-label mb-1">Tên chức vụ</label>
-                                <input id="roleName" name="NameRole" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label for="description" class="control-label mb-1">Mô tả</label>
-                                <textarea id="description" name="Description" class="form-control"></textarea>
-                                <span class="help-block field-validation-valid" data-valmsg-for="Description" data-valmsg-replace="true"></span>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
-                                <button type="submit" class="btn btn-primary">Lưu</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-*@
-
 <!-- Modal for Edit -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -222,8 +179,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="editBtn">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
+                <button type="button" class="btn btn-primary" id="editBtn">Sửa</button>
             </div>
         </div>
     </div>
@@ -250,10 +207,22 @@
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
         $("#btnDelete").click(function () {
             var _id = $("#roleId").val();
             $.ajax({
@@ -264,6 +233,10 @@
                         $("#deleteModal").modal('hide');
                         $(".item-" + _id).remove();
                         $("#roleId").val("null");
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Xóa thành công'
+                        });
                     }
                     else {
                         alert("Có lỗi xảy ra !");
@@ -271,7 +244,32 @@
                 }
             });
         });
-    })
+    });
+
+    //$(document).ready(function () {
+    //    $("#btnDelete").click(function () {
+    //        var _id = $("#roleId").val();
+    //        $.ajax({
+    //            type: "POST",
+    //            url: "/Roles/Delete/" + _id,
+    //            success: function (result) {
+    //                if (result) {
+    //                    $("#deleteModal").modal('hide');
+    //                    $(".item-" + _id).remove();
+    //                    $("#roleId").val("null");
+    //                    Toast.fire({
+    //                        icon: 'success',
+    //                        title: 'Xóa thành công'
+    //                    });
+    //                }
+    //                else {
+    //                    alert("Có lỗi xảy ra !");
+    //                }
+    //            }
+    //        });
+    //    });
+    //});
+
 
     var Confirm = function (IdRole) {
         $("#roleId").val(IdRole);
@@ -309,5 +307,6 @@
             }
         });
     });
+
 
 </script>
