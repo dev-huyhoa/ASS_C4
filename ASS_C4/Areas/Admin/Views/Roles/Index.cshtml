@@ -1,0 +1,268 @@
+﻿@model ASS_C4.Models.Role
+
+@{
+    ViewData["Title"] = "Role";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="section__content section__content--p30">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DATA TABLE -->
+            <h3 class="title-5 m-b-35">Quản lý chức vụ</h3>
+            <div class="table-data__tool">
+                <div class="table-data__tool-left">
+                    <div class="rs-select2--light rs-select2--md">
+                        <select class="js-select2" name="property">
+                            <option selected="selected">All Properties</option>
+                            <option value="">Option 1</option>
+                            <option value="">Option 2</option>
+                        </select>
+                        <div class="dropDownSelect2"></div>
+                    </div>
+                    <div class="rs-select2--light rs-select2--sm">
+                        <select class="js-select2" name="time">
+                            <option selected="selected">Today</option>
+                            <option value="">3 Days</option>
+                            <option value="">1 Week</option>
+                        </select>
+                        <div class="dropDownSelect2"></div>
+                    </div>
+                    <button class="au-btn-filter">
+                        <i class="zmdi zmdi-filter-list"></i>filters
+                    </button>
+                </div>
+                <div class="table-data__tool-right">
+                    <button type="button" data-toggle="modal" data-target="#createModal" class="au-btn au-btn-icon au-btn--green au-btn--small">
+                        <i class="zmdi zmdi-plus"></i>Thêm mới
+                    </button>
+                    <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+                        <select class="js-select2" name="type">
+                            <option selected="selected">Export</option>
+                            <option value="">Excel</option>
+                        </select>
+                        <div class="dropDownSelect2"></div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="EmpId" />
+            <div class="table-responsive table-responsive-data2">
+                <table class="table table-data2">
+                    <thead>
+                        <tr>
+                            <th>
+                                STT
+                            </th>
+                            <th>
+                                TÊN CHỨC VỤ
+                            </th>
+                            <th>
+                                MÔ TẢ
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rowNo = 0;
+                        }
+                        @if (ViewBag.role != null)
+                        {
+                            @foreach (var item in ViewBag.role)
+                            {
+                                <tr class="tr-shadow item-@item.IdRole">
+                                    <td>
+                                        @(rowNo += 1)
+                                    </td>
+                                    <td>
+                                        @item.NameRole
+                                    </td>
+                                    <td class="desc">
+                                        @item.Description
+                                    </td>
+                                    <td>
+                                        <div class="table-data-feature">
+                                            <button class="edit-btn item"
+                                                    data-toggle="modal" data-target="#editModal"
+                                                    data-id="@item.IdRole"
+                                                    data-placement="top" title="Sửa">
+                                                <i class="zmdi zmdi-edit"></i>
+                                            </button>
+
+                                            <button class="item" id="showModal" href="@Url.Action("Delete", "Roles", new {id = item.IdRole})"
+                                                    data-toggle="modal" data-target="#deleteModal" onclick="Confirm(@item.IdRole)"
+                                                    data-placement="top" title="Xóa">
+                                                <i class="zmdi zmdi-delete"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="spacer"></tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- END DATA TABLE -->
+            <input type="hidden" id="roleId" style="color:red" />
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="copyright">
+                <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="largeModalLabel">Thêm mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="Create" method="post" novalidate="novalidate">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label for="cc-payment" class="control-label mb-1">Tên chức vụ</label>
+                                <input id="cc-pament" name="NameRole" type="text" class="form-control" aria-required="true" aria-invalid="false">
+                            </div>
+                            <div class="form-group has-success">
+                                <label for="cc-name" class="control-label mb-1">Mô tả</label>
+                                <input id="cc-name" name="Description" type="text" class="form-control cc-name valid" data-val="true" data-val-required="Please enter the name on card"
+                                       autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
+                                <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" value="Create" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
+                                <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">EDIT ROLE</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editId">
+                    <div class="form-group">
+                        <label for="editName">Name</label>
+                        <input type="text" class="form-control" id="editName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription">Description</label>
+                        <input type="text" class="form-control" id="editDescription">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="editBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Bạn có muốn xóa không ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancel" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
+                <button type="submit" id="btnDelete" class="btn btn-danger">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#btnDelete").click(function () {
+            var _id = $("#roleId").val();
+            $.ajax({
+                type: "POST",
+                url: "/Roles/Delete/" + _id,
+                success: function (result) {
+                    if (result) {
+                        $("#deleteModal").modal('hide');
+                        $(".item-" + _id).remove();
+                        $("#roleId").val("null");
+                    }
+                    else {
+                        alert("Có lỗi xảy ra !");
+                    }
+                }
+            });
+        });
+    })
+
+    var Confirm = function (IdRole) {
+        $("#roleId").val(IdRole);
+        $("#deleteModal").modal('show');
+    }
+
+    $('.edit-btn').click(function () {
+        var id = $(this).data('id');
+        console.log(id);
+        $.ajax({
+            url: 'Roles/Edit',
+            type: 'GET',
+            data: { id: id },
+            success: function (result) {
+                console.log(result);
+                $('#editId').val(result.idRole);
+                $('#editName').val(result.nameRole);
+                $('#editDescription').val(result.description);
+            }
+        });
+    });
+
+    $('#editBtn').click(function () {
+        var id = $('#editId').val();
+        var name = $('#editName').val();
+        var description = $('#editDescription').val();
+        $.ajax({
+            url: 'Roles/Edit',
+            type: 'POST',
+            data: { IdRole: id, NameRole: name, Description: description },
+            success: function () {
+                location.reload();
+            }
+        });
+    });
+
+</script>

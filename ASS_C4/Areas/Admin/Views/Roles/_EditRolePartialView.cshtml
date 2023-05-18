@@ -1,0 +1,42 @@
+﻿@model Role
+
+<div class="modal fade" id="editModal-@Model.IdRole" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="largeModalLabel">Thêm mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="Edit" method="post" novalidate="novalidate">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <input type="hidden" asp-for="IdRole" />
+                                <label for="cc-payment" class="control-label mb-1">Tên chức vụ</label>
+                                <input id="cc-pament" asp-for="NameRole" type="text" class="form-control" aria-required="true" aria-invalid="false">
+                            </div>
+                            <div class="form-group has-success">
+                                <label for="cc-name" class="control-label mb-1">Mô tả</label>
+                                <input id="cc-name" asp-for="Description" type="text" class="form-control cc-name valid" data-val="true" data-val-required="Please enter the name on card"
+                                       autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
+                                <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" value="Create" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
+                                <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>

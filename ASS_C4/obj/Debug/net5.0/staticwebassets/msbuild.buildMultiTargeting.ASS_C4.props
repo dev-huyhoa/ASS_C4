@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\ASS_C4.props" />
+</Project>

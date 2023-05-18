@@ -1,0 +1,54 @@
+﻿<aside class="menu-sidebar d-none d-lg-block">
+    <div class="logo">
+        <a href="#">
+            <img src="~/images/icon/logo.png" alt="Cool Admin" />
+        </a>
+    </div>
+    <div class="menu-sidebar__content js-scrollbar1">
+        <nav class="navbar-sidebar">
+            <ul class="list-unstyled navbar__list">
+                <li class="@(ViewBag.Active == "Home" ? "active": "")">
+                    <a asp-area="Admin" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-bar-chart-o"></i>Thống Kê
+                    </a>
+                </li>
+                <li>
+                    <a href="table.html">
+                        <i class="fas fa-shopping-cart"></i>Quản Lý Đơn Hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="form.html">
+                        <i class="fas fa-th-list"></i>Quản Lý Danh Mục
+                    </a>
+                </li>
+                <li>
+                    <a href="form.html">
+                        <i class="fas fa-edit"></i>Quản Lý Sản Phẩm
+                    </a>
+                </li>
+                <li class="@(ViewBag.Active == "Role" ? "active": "")">
+                    <a asp-area="Admin" asp-controller="Roles" asp-action="Index">
+                        <i class="fas fa-cog"></i>Quản Lý Chức Vụ
+                    </a>
+                </li>
+                <li>
+                    <a href="map.html">
+                        <i class="fas fa-user"></i>Quản Lý Nhân Viên
+                    </a>
+                </li>
+                <li>
+                    <a href="calendar.html">
+                        <i class="fas fa-users"></i>Quản Lý Khách Hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="calendar.html">
+                        <i class="fas fa-picture-o"></i>Quản Lý Tin Tức
+                    </a>
+                </li>                
+            </ul>
+        </nav>
+    </div>
+</aside>
+
