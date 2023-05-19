@@ -207,8 +207,7 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     $(document).ready(function () {
         const Toast = Swal.mixin({
@@ -245,31 +244,6 @@
             });
         });
     });
-
-    //$(document).ready(function () {
-    //    $("#btnDelete").click(function () {
-    //        var _id = $("#roleId").val();
-    //        $.ajax({
-    //            type: "POST",
-    //            url: "/Roles/Delete/" + _id,
-    //            success: function (result) {
-    //                if (result) {
-    //                    $("#deleteModal").modal('hide');
-    //                    $(".item-" + _id).remove();
-    //                    $("#roleId").val("null");
-    //                    Toast.fire({
-    //                        icon: 'success',
-    //                        title: 'Xóa thành công'
-    //                    });
-    //                }
-    //                else {
-    //                    alert("Có lỗi xảy ra !");
-    //                }
-    //            }
-    //        });
-    //    });
-    //});
-
 
     var Confirm = function (IdRole) {
         $("#roleId").val(IdRole);
