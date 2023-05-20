@@ -1,7 +1,7 @@
-﻿@model ASS_C4.Models.Role
+﻿@model ASS_C4.Models.Category
 
 @{
-    ViewData["Title"] = "Role";
+    ViewData["Title"] = "Category";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -54,28 +54,33 @@
                                 STT
                             </th>
                             <th>
-                                TÊN CHỨC VỤ
+                                MÃ
+                            </th>
+                            <th>
+                                TÊN DANH MỤC
                             </th>
                             <th>
                                 MÔ TẢ
                             </th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @{
                             int rowNo = 0;
                         }
-                        @if (ViewBag.role != null)
+                        @if (ViewBag.category != null)
                         {
-                            @foreach (var item in ViewBag.role)
+                            @foreach (var item in ViewBag.category)
                             {
-                                <tr class="tr-shadow item-@item.IdRole">
+                                <tr class="tr-shadow item-@item.IdCategory">
                                     <td>
                                         @(rowNo += 1)
                                     </td>
                                     <td>
-                                        @item.NameRole
+                                        @item.IdCategory
+                                    </td>
+                                    <td class="desc">
+                                        @item.NameCategory
                                     </td>
                                     <td class="desc">
                                         @item.Description
@@ -84,17 +89,18 @@
                                         <div class="table-data-feature">
                                             <button class="edit-btn item"
                                                     data-toggle="modal" data-target="#editModal"
-                                                    data-id="@item.IdRole"
+                                                    data-id="@item.IdCategory"
                                                     data-placement="top" title="Sửa">
                                                 <i class="zmdi zmdi-edit"></i>
                                             </button>
 
-                                            <button class="item" id="showModal" href="@Url.Action("Delete", "Roles", new {id = item.IdRole})"
-                                                    data-toggle="modal" data-target="#deleteModal" onclick="Confirm(@item.IdRole)"
+                                            <button class="item" id="showModal" href="@Url.Action("Delete", "Category", new {id = item.IdCategory})"
+                                                    data-toggle="modal" data-target="#deleteModal" onclick="Confirm('@item.IdCategory')"
                                                     data-placement="top" title="Xóa">
                                                 <i class="zmdi zmdi-delete"></i>
                                             </button>
                                         </div>
+
                                     </td>
                                 </tr>
                                 <tr class="spacer"></tr>
@@ -104,8 +110,7 @@
                 </table>
             </div>
             <!-- END DATA TABLE -->
-            <input type="hidden" id="roleId" style="color:red" />
-
+            <input type="hidden" id="categoryId" style="color:red" />
         </div>
     </div>
     <div class="row">
@@ -116,7 +121,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -133,8 +137,8 @@
                         <form asp-action="Create" method="post" novalidate="novalidate">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
-                                <label for="cc-payment" class="control-label mb-1">Tên chức vụ</label>
-                                <input id="cc-pament" name="NameRole" type="text" class="form-control" aria-required="true" aria-invalid="false">
+                                <label for="cc-payment" class="control-label mb-1">Tên danh mục</label>
+                                <input id="cc-pament" name="NameCategory" type="text" class="form-control" aria-required="true" aria-invalid="false">
                             </div>
                             <div class="form-group has-success">
                                 <label for="cc-name" class="control-label mb-1">Mô tả</label>
@@ -168,11 +172,11 @@
                 <form id="editForm">
                     <input type="hidden" id="editId">
                     <div class="form-group">
-                        <label for="editName">Name</label>
-                        <input type="text" class="form-control" id="editName" required>
+                        <label for="editNameCate">Tên Danh Mục</label>
+                        <input type="text" class="form-control" id="editNameCate" required>
                     </div>
                     <div class="form-group">
-                        <label for="editDescription">Description</label>
+                        <label for="editDescription">Mô Tả</label>
                         <input type="text" class="form-control" id="editDescription">
                     </div>
                 </form>
@@ -222,15 +226,16 @@
         });
 
         $("#btnDelete").click(function () {
-            var _id = $("#roleId").val();
+            var _id = $("#categoryId").val();
+            console.log(_id)
             $.ajax({
                 type: "POST",
-                url: "/Roles/Delete/" + _id,
+                url: "/Category/Delete/" + _id,
                 success: function (result) {
                     if (result) {
                         $("#deleteModal").modal('hide');
                         $(".item-" + _id).remove();
-                        $("#roleId").val("null");
+                        $("#categoryId").val("null");
                         Toast.fire({
                             icon: 'success',
                             title: 'Xóa thành công'
@@ -244,42 +249,55 @@
         });
     });
 
-    var Confirm = function (IdRole) {
-        $("#roleId").val(IdRole);
+    var Confirm = function (IdCategory) {
+        $("#categoryId").val(IdCategory);
         $("#deleteModal").modal('show');
     }
 
     // Edit Product
+    //$('.edit-btn').click(function () {
+    //    var id = $(this).data('id');
+    //    console.log(id);
+    //    $.ajax({
+    //        url: '/Category/Edit/' + 1,
+    //        type: 'GET',
+    //        //data: { id: 1 },
+    //        success: function (result) {
+    //            console.log(result);
+    //            $('#editId').val(result.idCategory);
+    //            $('#editNameCate').val(result.nameCategory);
+    //            $('#editDescription').val(result.description);
+    //        }
+    //    });
+    //});
+
     $('.edit-btn').click(function () {
-        var id = $(this).data('id').toString();
+        var id = $(this).data('id');
         console.log(id);
         $.ajax({
-            url: 'Roles/Edit/'+ id,
+            url: 'Category/Edit/' + id,
             type: 'GET',
             //data: { id: id },
             success: function (result) {
                 console.log(result);
-                $('#editId').val(result.idRole);
-                $('#editName').val(result.nameRole);
+                $('#editId').val(result.idCategory);
+                $('#editNameCate').val(result.nameCategory);
                 $('#editDescription').val(result.description);
             }
         });
     });
 
-
     $('#editBtn').click(function () {
         var id = $('#editId').val();
-        var name = $('#editName').val();
+        var name = $('#editNameCate').val();
         var description = $('#editDescription').val();
         $.ajax({
-            url: 'Roles/Edit',
+            url: 'Category/Edit',
             type: 'POST',
-            data: { IdRole: id, NameRole: name, Description: description },
+            data: { IdCategory: id, NameCategory: name, Description: description },
             success: function () {
                 location.reload();
             }
         });
     });
-
-
 </script>

@@ -50,6 +50,7 @@ namespace ASS_C4.Areas.Admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    role.IsDeleted = false;
                     _context.Add(role);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -61,6 +62,7 @@ namespace ASS_C4.Areas.Admin.Controllers
             }
             return RedirectToAction("Index");
         }
+
 
         [HttpGet]
         public IActionResult Edit(int id)
