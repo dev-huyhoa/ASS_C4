@@ -223,6 +223,7 @@
 
         $("#btnDelete").click(function () {
             var _id = $("#roleId").val();
+            console.log(_id);
             $.ajax({
                 type: "POST",
                 url: "/Roles/Delete/" + _id,
@@ -265,21 +266,5 @@
             }
         });
     });
-
-
-    $('#editBtn').click(function () {
-        var id = $('#editId').val();
-        var name = $('#editName').val();
-        var description = $('#editDescription').val();
-        $.ajax({
-            url: 'Roles/Edit',
-            type: 'POST',
-            data: { IdRole: id, NameRole: name, Description: description },
-            success: function () {
-                location.reload();
-            }
-        });
-    });
-
 
 </script>

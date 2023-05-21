@@ -16,6 +16,7 @@ namespace ASS_C4.Models
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<ListProduct> ListProduct { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,11 @@ namespace ASS_C4.Models
                 entity.Property(e => e.NameRole).HasMaxLength(50);
                 entity.Property(e => e.Description).HasMaxLength(50);
                 entity.Property(e => e.NameRole).IsRequired(true);
+            });
+
+            modelBuilder.Entity<ListProduct>(entity =>
+            {
+                entity.HasKey(e => e.IdListProduct);
             });
 
             modelBuilder.Entity<Employee>(entity =>

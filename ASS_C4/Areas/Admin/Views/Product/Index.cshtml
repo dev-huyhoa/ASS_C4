@@ -1,7 +1,7 @@
 ﻿@model ASS_C4.Models.Product
 
 @{
-    ViewData["Title"] = "Role";
+    ViewData["Title"] = "Product";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -115,8 +115,8 @@
                                                 <i class="zmdi zmdi-edit"></i>
                                             </button>
 
-                                            <button class="item" id="showModal" href="@Url.Action("Delete", "Product", new {id = item.IdProduct})"
-                                                    data-toggle="modal" data-target="#deleteModal" onclick="Confirm(@item.IdProduct)"
+                                            <button class="item" id="showModal" @* href="@Url.Action("Delete", "Product", new {id = item.IdProduct})"*@
+                                                    data-toggle="modal" data-target="#deleteModal" @*onclick="Confirm('@item.IdProduct')"*@
                                                     data-placement="top" title="Xóa">
                                                 <i class="zmdi zmdi-delete"></i>
                                             </button>
@@ -130,8 +130,7 @@
                 </table>
             </div>
             <!-- END DATA TABLE -->
-            <input type="hidden" id="roleId" style="color:red" />
-
+            <input type="hidden" id="productId" style="color:red" />
         </div>
     </div>
     <div class="row">
@@ -142,3 +141,230 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="largeModalLabel">Thêm mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="Create" method="post" novalidate="novalidate">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group has-success">
+                                <label for="cc-payment" class="control-label mb-1">Tên sản phẩm</label>
+                                <input id="cc-pament" name="NameProduct" type="text" class="form-control" aria-required="true" aria-invalid="false">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="cc-payment" class="control-label mb-1">Size</label>
+                                            <input id="cc-pament" name="Size" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="cc-payment" class="control-label mb-1">Số lượng</label>
+                                            <input id="cc-payment" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="cc-payment" class="control-label mb-1">Giá</label>
+                                            <input id="cc-pament" name="Price" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="cc-payment" class="control-label mb-1">Giá khuyến mãi</label>
+                                            <input id="cc-payment" name="PricePromotion" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="cc-payment" class="control-label mb-1">Chọn Hình Ảnh</label>
+                                        <input id="cc-pament" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="category" class="control-label mb-1">Chọn danh mục</label>
+                                        <select id="category" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                            <option value="">-- Chọn danh mục --</option>
+                                            @if (ViewBag.viewAllCategory != null)
+                                            {
+                                                @foreach (var category in ViewBag.viewAllCategory)
+                                                {
+                                                    <option value="@category.IdCategory">@category.NameCategory</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <label for="cc-name" class="control-label mb-1">Mô tả</label>
+                                <textarea id="cc-name" name="Description" class="form-control cc-name valid" data-val="true"
+                                          data-val-required="Please enter the name on card" autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
+                                </textarea>
+
+                                <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" value="Create" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
+                                <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="largeModalLabel">EDIT PRODUCT</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editId">
+                    <div class="form-group has-success">
+                        <label for="cc-payment" class="control-label mb-1">Tên sản phẩm</label>
+                        <input type="text" class="form-control" id="editName" required>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="cc-payment" class="control-label mb-1">Size</label>
+                                    <input id="cc-pament" name="Size" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="cc-payment" class="control-label mb-1">Số lượng</label>
+                                    <input id="cc-payment" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="cc-payment" class="control-label mb-1">Giá</label>
+                                    <input id="cc-pament" name="Price" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="cc-payment" class="control-label mb-1">Giá khuyến mãi</label>
+                                    <input id="cc-payment" name="PricePromotion" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="cc-payment" class="control-label mb-1">Chọn Hình Ảnh</label>
+                                <input id="cc-pament" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
+                            </div>
+                            <div class="col-6">
+                                <label for="category" class="control-label mb-1">Chọn danh mục</label>
+                                <select id="category" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                    <option value="">-- Chọn danh mục --</option>
+                                    @if (ViewBag.viewAllCategory != null)
+                                    {
+                                        @foreach (var category in ViewBag.viewAllCategory)
+                                        {
+                                            <option value="@category.IdCategory">@category.NameCategory</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <label for="cc-name" class="control-label mb-1">Mô tả</label>
+                        <textarea id="cc-name" name="Description" class="form-control cc-name valid" data-val="true"
+                                  data-val-required="Please enter the name on card" autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
+                                </textarea>
+
+                        <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
+                <button type="button" class="btn btn-primary" id="editBtn">Sửa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        $("#btnDelete").click(function () {
+            var _id = $("#productId").val();
+            console.log(_id)
+            $.ajax({
+                type: "POST",
+                url: "/Product/Delete/" + _id,
+                success: function (result) {
+                    if (result) {
+                        $("#deleteModal").modal('hide');
+                        $(".item-" + _id).remove();
+                        $("#productId").val("null");
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Xóa thành công'
+                        });
+                    }
+                    else {
+                        alert("Có lỗi xảy ra !");
+                    }
+                }
+            });
+        });
+    });
+
+    var Confirm = function (IdProduct) {
+        $("#productId").val(IdProduct);
+        $("#deleteModal").modal('show');
+    }
+
+        // Edit Product
+        //$('.edit-btn').click(function () {
+        //    var id = $(this).data('id').toString();
+        //    console.log(id);
+        //    $.ajax({
+        //        url: 'Product/Edit/' + id,
+        //        type: 'GET',
+        //        //data: { id: id },
+        //        success: function (result) {
+        //            console.log(result);
+        //            $('#editId').val(result.idRole);
+        //            $('#editName').val(result.nameRole);
+        //            $('#editDescription').val(result.description);
+        //        }
+        //    });
+        //});
+
+</script>

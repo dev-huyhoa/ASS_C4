@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System;
+using ASS_C4.Areas.Admin.ViewModel;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ASS_C4.Areas.Admin.Controllers
 {
@@ -23,11 +26,130 @@ namespace ASS_C4.Areas.Admin.Controllers
         public async Task<ActionResult> Index()
         {
             ViewBagActive();
+            viewAllCategory();
             var product = await (from x in _context.Products
-                              where x.IsDelete == false
-                              select x).ToListAsync();
+                                 join z in _context.Categories
+                                 on x.CategoryId equals z.IdCategory
+
+                                 join y in _context.ListProduct
+                                 on x.IdProduct equals y.ProductId
+                                 where x.IsDelete == false       
+                                 select new ProductViewModel
+                                 {
+                                     IdProduct = x.IdProduct,
+                                     NameProduct = x.NameProduct,
+                                     Image = x.Image,
+                                     Price = x.Price,
+                                     PricePromotion = x.PricePromotion,
+                                     Decription = x.Decription,
+                                     Status = x.Status,
+                                     ModifyDate = x.ModifyDate,
+                                     Size = y.Size,
+                                     Quantity = y.Quantity,
+                                     NameCategory = z.NameCategory
+                                 }).ToListAsync();
             ViewBag.product = product;
             return View();
+        }
+        // GET: RolesController/Create
+        public ActionResult Create()
+        {
+            ViewBag.Active = "Role";
+            return View();
+        }
+        public void viewAllCategory()
+        {
+            var result = (from x in _context.Categories
+                          select x).ToList();
+            ViewBag.viewAllCategory = result;
+        }
+        // POST: RolesController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([FromForm] ProductViewModel productView)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Product product = new Product();
+                    product.IdProduct = new Guid();
+                    product.NameProduct = productView.NameProduct;
+                    product.Price = productView.Price;
+                    product.PricePromotion = productView.PricePromotion;
+                    product.Image = productView.Image;
+                    product.Decription = productView.Decription;
+                    product.CategoryId = productView.CategoryId;
+                    product.Status = true;
+                    product.ModifyDate = Helper.Ultility.ConvertDatetimeToUnixTimeStampMiliSecond(DateTime.Now);
+                    product.IsDelete = false;
+                    _context.Add(product);
+
+                    ListProduct listProduct = new ListProduct();
+                    listProduct.IdListProduct = new Guid();
+                    listProduct.ProductId = product.IdProduct;
+                    listProduct.Quantity = productView.Quantity;
+                    listProduct.Size = productView.Size;
+                    _context.Add(listProduct);
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch
+            {
+                return NotFound();
+            }
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var product = _context.Products.Find(id);
+            return Json(product);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(ProductViewModel product)
+        {
+            // Xử lý cập nhật sản phẩm
+            var result = _context.Products.Find(product.IdProduct);
+            result.NameProduct = product.NameProduct;
+            result.PricePromotion = product.PricePromotion;
+            result.Price = product.Price;
+            result.Image = product.Image;
+            result.CategoryId = product.CategoryId;
+            result.Status = false;
+            result.IsDelete = false;
+            result.Decription = product.Decription;
+            _context.Products.Update(result);
+
+            var ListProduct = _context.ListProduct.Find(product.IdProduct);
+            ListProduct.Size = product.Size;
+            ListProduct.Quantity = product.Quantity;
+            _context.ListProduct.Update(ListProduct);
+
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        // POST: RolesController/Delete/5
+        [Route("Product/Delete/{id}")]
+        [HttpPost]
+        public JsonResult Delete(Guid id)
+        {
+            // Code to delete item with id in the database
+            bool result = false;
+            var product = _context.Products.FirstOrDefault(s => s.IdProduct == id);
+            if (product != null)
+            {
+                product.IsDelete = true;
+                _context.SaveChanges();
+                result = true;
+            }
+            return Json(result);
         }
     }
 }
