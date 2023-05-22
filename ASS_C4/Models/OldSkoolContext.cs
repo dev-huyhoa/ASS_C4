@@ -62,7 +62,7 @@ namespace ASS_C4.Models
                 entity.HasKey(e => e.IdProduct);
                 entity.Property(e => e.NameProduct).HasMaxLength(50);
                 entity.Property(e => e.Decription).HasMaxLength(100);
-                entity.Property(e => e.Image).HasMaxLength(100);
+                entity.Property(e => e.Image).HasMaxLength(1000);
                 entity.Property(e => e.NameProduct).IsRequired(true);
                 entity.HasOne(e => e.Categories)
                .WithMany(d => d.Products)

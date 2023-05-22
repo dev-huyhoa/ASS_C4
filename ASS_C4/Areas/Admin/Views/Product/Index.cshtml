@@ -146,7 +146,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
+@*<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -231,7 +231,7 @@
         </div>
     </div>
 </div>
-
+*@
 <!-- Modal for Edit -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -364,7 +364,6 @@
         $('#selectedImage').text(fileName);
     });
 
-
     $('.edit-btn').click(function () {
         var id = $(this).data('id').toString();
         console.log(id);
@@ -378,8 +377,8 @@
                     $('#editName').val(product.nameProduct);
                     $('#editPrice').val(product.price);
                     $('#editPricePromotion').val(product.pricePromotion);
-                    //$('#editImage').val(product.image);
-                    $('#selectedImage').text(product.image); // Hiển thị tên tệp
+                    $('#selectedImage').text(product.image);
+                    console.log(product.image)
                     $('#editStatus').val(product.status);
                     $('#editDescription').val(product.description);
                     $('#editCategory').val(product.categoryId);
@@ -389,6 +388,7 @@
             }
         });
     });
+
 
     function validateForm() {
         $('.error-message').remove();
@@ -420,21 +420,12 @@
             $('#editPricePromotion').after('<span class="error-message">Vui lòng nhập giá khuyến mãi</span>');
             error = true;
         }
-        let result = validateFileInput();
-        if (result){
+
+        if (document.getElementById("editImage").files.length == 0){
+            $('#editImage').after('<span class="error-message">Vui lòng chọn hình ảnh</span>');
             error = true
         }
         return error;
-    }
-
-    function validateFileInput() {
-        var selectedFile = $('#editImage')[0].files[0];
-        // Kiểm tra nếu không có tệp tin được chọn
-        if (!selectedFile) {
-            $('#editImage').after('<span class="error-message">Vui lòng chọn hình ảnh</span>');
-            return false;
-        }
-        return true;
     }
 
 
@@ -453,7 +444,7 @@
             let name = $('#editName').val();
             let price = $('#editPrice').val();
             let pricePromotion = $('#editPricePromotion').val();
-            let image = $('#editImage')[0].files[0];
+            let image = $('#editImage').val();
             let status = $('#editStatus').val();
             let idcategory = $('#editCategory').val();
             let quantity = $('#editQuantity').val();
