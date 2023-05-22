@@ -4,7 +4,11 @@
     ViewData["Title"] = "Product";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-
+<style>
+    .error-message {
+        color: red;
+    }
+</style>
 <div class="section__content section__content--p30">
     <div class="row">
         <div class="col-md-12">
@@ -115,8 +119,8 @@
                                                 <i class="zmdi zmdi-edit"></i>
                                             </button>
 
-                                            <button class="item" id="showModal" @* href="@Url.Action("Delete", "Product", new {id = item.IdProduct})"*@
-                                                    data-toggle="modal" data-target="#deleteModal" @*onclick="Confirm('@item.IdProduct')"*@
+                                            <button class="item" id="showModal"  href="@Url.Action("Delete", "Product", new {id = item.IdProduct})"
+                                                    data-toggle="modal" data-target="#deleteModal" onclick="Confirm('@item.IdProduct')"
                                                     data-placement="top" title="Xóa">
                                                 <i class="zmdi zmdi-delete"></i>
                                             </button>
@@ -190,7 +194,8 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="cc-payment" class="control-label mb-1">Chọn Hình Ảnh</label>
-                                        <input id="cc-pament" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
+                                        <input id="editImage" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
+                                        <span id="selectedImage"></span>
                                     </div>
                                     <div class="col-6">
                                         <label for="category" class="control-label mb-1">Chọn danh mục</label>
@@ -240,6 +245,8 @@
             <div class="modal-body">
                 <form id="editForm">
                     <input type="hidden" id="editId">
+                    <input type="hidden" id="editIdCategory">
+
                     <div class="form-group has-success">
                         <label for="cc-payment" class="control-label mb-1">Tên sản phẩm</label>
                         <input type="text" class="form-control" id="editName" required>
@@ -247,13 +254,13 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="cc-payment" class="control-label mb-1">Size</label>
-                                    <input id="cc-pament" name="Size" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                    <input id="editSize" name="Size" type="number" class="form-control" aria-required="true" aria-invalid="false">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="cc-payment" class="control-label mb-1">Số lượng</label>
-                                    <input id="cc-payment" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                    <input id="editQuantity" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
                                 </div>
                             </div>
                         </div>
@@ -261,24 +268,24 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="cc-payment" class="control-label mb-1">Giá</label>
-                                    <input id="cc-pament" name="Price" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                    <input id="editPrice" name="Price" type="number" class="form-control" aria-required="true" aria-invalid="false">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="cc-payment" class="control-label mb-1">Giá khuyến mãi</label>
-                                    <input id="cc-payment" name="PricePromotion" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                    <input id="editPricePromotion" name="PricePromotion" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <label for="cc-payment" class="control-label mb-1">Chọn Hình Ảnh</label>
-                                <input id="cc-pament" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
+                                <input id="editImage" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
                             </div>
                             <div class="col-6">
                                 <label for="category" class="control-label mb-1">Chọn danh mục</label>
-                                <select id="category" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                <select id="editCategory" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
                                     <option value="">-- Chọn danh mục --</option>
                                     @if (ViewBag.viewAllCategory != null)
                                     {
@@ -291,7 +298,7 @@
                             </div>
                         </div>
                         <label for="cc-name" class="control-label mb-1">Mô tả</label>
-                        <textarea id="cc-name" name="Description" class="form-control cc-name valid" data-val="true"
+                        <textarea id="editDescription" name="Description" class="form-control cc-name valid" data-val="true"
                                   data-val-required="Please enter the name on card" autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
                                 </textarea>
 
@@ -351,20 +358,133 @@
     }
 
         // Edit Product
-        //$('.edit-btn').click(function () {
-        //    var id = $(this).data('id').toString();
-        //    console.log(id);
-        //    $.ajax({
-        //        url: 'Product/Edit/' + id,
-        //        type: 'GET',
-        //        //data: { id: id },
-        //        success: function (result) {
-        //            console.log(result);
-        //            $('#editId').val(result.idRole);
-        //            $('#editName').val(result.nameRole);
-        //            $('#editDescription').val(result.description);
-        //        }
-        //    });
-        //});
+    $('#editImage').change(function () {
+        var file = $(this)[0].files[0];
+        var fileName = file ? file.name : "";
+        $('#selectedImage').text(fileName);
+    });
+
+
+    $('.edit-btn').click(function () {
+        var id = $(this).data('id').toString();
+        console.log(id);
+        $.ajax({
+            url: 'Product/Edit/' + id,
+            type: 'GET',
+            success: function (result) {
+                console.log(result);
+                $.each(result, function (index, product) {
+                    $('#editId').val(product.idProduct);
+                    $('#editName').val(product.nameProduct);
+                    $('#editPrice').val(product.price);
+                    $('#editPricePromotion').val(product.pricePromotion);
+                    //$('#editImage').val(product.image);
+                    $('#selectedImage').text(product.image); // Hiển thị tên tệp
+                    $('#editStatus').val(product.status);
+                    $('#editDescription').val(product.description);
+                    $('#editCategory').val(product.categoryId);
+                    $('#editQuantity').val(product.quantity);
+                    $('#editSize').val(product.size);
+                });
+            }
+        });
+    });
+
+    function validateForm() {
+        $('.error-message').remove();
+        let error = false;
+        if ($('#editName').val() === '') {
+            $('#editName').after('<span class="error-message">Vui nhập tên sản phẩm</span>');
+            error = true;
+        }
+
+        if ($('#editSize').val() === '') {
+            $('#editSize').after('<span class="error-message">Vui lòng nhập size</span>');
+            error = true;
+        }
+
+        if ($('#editQuantity').val() === '') {
+            $('#editQuantity').after('<span class="error-message">Vui lòng nhập số lượng</span>');
+            error = true;
+        }
+        if ($('#editCategory').val() === '') {
+            $('#editCategory').after('<span class="error-message">Vui lòng chọn danh mục</span>');
+            error = true;
+        }
+        if ($('#editPrice').val() === '') {
+            $('#editPrice').after('<span class="error-message">Vui lòng nhập giá</span>');
+            error = true;
+        }
+
+        if ($('#editPricePromotion').val() === '') {
+            $('#editPricePromotion').after('<span class="error-message">Vui lòng nhập giá khuyến mãi</span>');
+            error = true;
+        }
+        let result = validateFileInput();
+        if (result){
+            error = true
+        }
+        return error;
+    }
+
+    function validateFileInput() {
+        var selectedFile = $('#editImage')[0].files[0];
+        // Kiểm tra nếu không có tệp tin được chọn
+        if (!selectedFile) {
+            $('#editImage').after('<span class="error-message">Vui lòng chọn hình ảnh</span>');
+            return false;
+        }
+        return true;
+    }
+
+
+    $('#editBtn').click(function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        // Remove error messages before rechecking
+        $('.error-message').remove();
+
+        let error = validateForm();
+        console.log(error)
+        if(error == false){
+            console.log($('#editId').val());
+            let id = $('#editId').val();
+            let name = $('#editName').val();
+            let price = $('#editPrice').val();
+            let pricePromotion = $('#editPricePromotion').val();
+            let image = $('#editImage')[0].files[0];
+            let status = $('#editStatus').val();
+            let idcategory = $('#editCategory').val();
+            let quantity = $('#editQuantity').val();
+            let size = $('#editSize').val();
+            let description = $('#editDescription').val();
+
+            $.ajax({
+                url: 'Product/Edit',
+                type: 'POST',
+                data: {
+                    IdProduct: id,
+                    NameProduct: name,
+                    Price: price,
+                    PricePromotion: pricePromotion,
+                    Image: image,
+                    Status: status,
+                    categoryId: idcategory,
+                    Quantity: quantity,
+                    Size: size,
+                    Description: description
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText); // Display detailed error in the console
+                }
+            });
+        }
+    });
+
+
 
 </script>

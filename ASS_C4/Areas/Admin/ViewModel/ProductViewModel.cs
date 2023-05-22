@@ -20,5 +20,7 @@ namespace ASS_C4.Areas.Admin.ViewModel
         public bool IsDelete { get; set; }
         public bool Status { get; set; }
         public Guid CategoryId { get; set; }
+        public Guid ProductId { get; set; }
+
     }
 }

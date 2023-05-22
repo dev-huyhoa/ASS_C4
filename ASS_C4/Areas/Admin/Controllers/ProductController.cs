@@ -47,14 +47,14 @@ namespace ASS_C4.Areas.Admin.Controllers
                                      Size = y.Size,
                                      Quantity = y.Quantity,
                                      NameCategory = z.NameCategory
-                                 }).ToListAsync();
+                                 }).ToListAsync();      
             ViewBag.product = product;
             return View();
         }
         // GET: RolesController/Create
         public ActionResult Create()
         {
-            ViewBag.Active = "Role";
+            ViewBag.Active = "Product";
             return View();
         }
         public void viewAllCategory()
@@ -105,9 +105,31 @@ namespace ASS_C4.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Edit(Guid id)
         {
-            var product = _context.Products.Find(id);
+            //var product = _context.Products.Find(id);
+            var product = (from x in _context.Products
+                           join z in _context.Categories
+                           on x.CategoryId equals z.IdCategory
+
+                           join y in _context.ListProduct
+                           on x.IdProduct equals y.ProductId
+                           where x.IdProduct == id
+                           select new ProductViewModel
+                           {
+                               IdProduct = x.IdProduct,
+                               CategoryId = x.CategoryId,
+                               NameProduct = x.NameProduct,
+                               Image = x.Image,
+                               Price = x.Price,
+                               PricePromotion = x.PricePromotion,
+                               Decription = x.Decription,
+                               Status = x.Status,
+                               ModifyDate = x.ModifyDate,
+                               Size = y.Size,
+                               Quantity = y.Quantity,
+                               NameCategory = z.NameCategory
+                           }).ToList();
             return Json(product);
         }
 
@@ -126,7 +148,11 @@ namespace ASS_C4.Areas.Admin.Controllers
             result.Decription = product.Decription;
             _context.Products.Update(result);
 
-            var ListProduct = _context.ListProduct.Find(product.IdProduct);
+            product.ProductId = result.IdProduct;
+            var ListProduct = (from x in _context.ListProduct
+                               where x.ProductId == product.IdProduct
+                               select x).FirstOrDefault();
+                               
             ListProduct.Size = product.Size;
             ListProduct.Quantity = product.Quantity;
             _context.ListProduct.Update(ListProduct);

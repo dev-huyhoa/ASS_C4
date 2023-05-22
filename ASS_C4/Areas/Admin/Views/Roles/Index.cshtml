@@ -250,7 +250,7 @@
         $("#deleteModal").modal('show');
     }
 
-    // Edit Product
+    // Edit role
     $('.edit-btn').click(function () {
         var id = $(this).data('id').toString();
         console.log(id);
@@ -267,4 +267,17 @@
         });
     });
 
+    $('#editBtn').click(function () {
+        var id = $('#editId').val();
+        var name = $('#editName').val();
+        var description = $('#editDescription').val();
+        $.ajax({
+            url: 'Roles/Edit',
+            type: 'POST',
+            data: { IdRole: id, NameRole: name, Description: description },
+            success: function () {
+                location.reload();
+            }
+        });
+    });
 </script>
