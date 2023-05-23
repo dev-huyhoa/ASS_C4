@@ -19,6 +19,7 @@ namespace ASS_C4.Areas.Admin.ViewModel
         public long ModifyDate { get; set; }
         public bool IsDelete { get; set; }
         public bool Status { get; set; }
+        public string FullPath { get; set; }
         public Guid CategoryId { get; set; }
         public Guid ProductId { get; set; }
 

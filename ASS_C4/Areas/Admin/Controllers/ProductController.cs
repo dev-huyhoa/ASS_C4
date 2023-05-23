@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using ASS_C4.Areas.Admin.ViewModel;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace ASS_C4.Areas.Admin.Controllers
 {
@@ -134,8 +136,9 @@ namespace ASS_C4.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(ProductViewModel product)
+        public IActionResult Edit(ProductViewModel product, ICollection<IFormFile> files)
         {
+            
             // Xử lý cập nhật sản phẩm
             var result = _context.Products.Find(product.IdProduct);
             result.NameProduct = product.NameProduct;
