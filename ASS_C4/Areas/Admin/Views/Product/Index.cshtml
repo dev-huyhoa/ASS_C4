@@ -95,7 +95,7 @@
                                         @item.NameProduct
                                     </td>
                                     <td class="desc">
-                                        <img src="@item.Image" alt="Hình ảnh" style="width: 154px; height: 130px;">
+                                        <img src="@item.UrlImage" alt="Hình ảnh" style="width: 154px; height: 130px;">
                                     </td>
                                     <td class="desc">
                                         @item.Quantity
@@ -158,7 +158,7 @@
             <div class="modal-body">
                 <div class="card">
                     <div class="card-body">
-                        <form asp-action="Create" method="post" novalidate="novalidate">
+                        <form asp-action="Create" method="post" novalidate="novalidate" enctype="multipart/form-data">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group has-success">
                                 <label for="cc-payment" class="control-label mb-1">Tên sản phẩm</label>
@@ -222,7 +222,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" value="Create" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
-                                <button type="submit" class="btn btn-primary">Thêm mới</button>
+                                <button type="submit" class="btn btn-primary" onclick="return validateForm()">Thêm mới</button>
                             </div>
                         </form>
                     </div>
@@ -430,6 +430,47 @@
             }
         });
     });
+    //function validateForm() {
+    //    $('.error-message').remove();
+    //    let error = false;
+
+    //    if ($('#cc-pament').val() === '') {
+    //        $('#cc-pament').after('<span class="error-message">Vui lòng nhập tên sản phẩm</span>');
+    //        error = true;
+    //    }
+
+    //    if ($('#cc-pament').val() === '') {
+    //        $('#cc-pament').after('<span class="error-message">Vui lòng nhập size</span>');
+    //        error = true;
+    //    }
+
+    //    if ($('#cc-payment').val() === '') {
+    //        $('#cc-payment').after('<span class="error-message">Vui lòng nhập số lượng</span>');
+    //        error = true;
+    //    }
+
+    //    if ($('#category').val() === '') {
+    //        $('#category').after('<span class="error-message">Vui lòng chọn danh mục</span>');
+    //        error = true;
+    //    }
+
+    //    if ($('#cc-pament').val() === '') {
+    //        $('#cc-pament').after('<span class="error-message">Vui lòng nhập giá</span>');
+    //        error = true;
+    //    }
+
+    //    if ($('#cc-payment').val() === '') {
+    //        $('#cc-payment').after('<span class="error-message">Vui lòng nhập giá khuyến mãi</span>');
+    //        error = true;
+    //    }
+
+    //    if (document.getElementById("Image").files.length == 0) {
+    //        $('#Image').after('<span class="error-message">Vui lòng chọn hình ảnh</span>');
+    //        error = true;
+    //    }
+
+    //    return !error;
+    //}
 
 
     function validateForm() {

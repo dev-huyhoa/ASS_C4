@@ -1,4 +1,5 @@
 ﻿using ASS_C4.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 
 namespace ASS_C4.Areas.Admin.ViewModel
@@ -13,9 +14,9 @@ namespace ASS_C4.Areas.Admin.ViewModel
         public int Quantity { get; set; }
         public int Price { get; set; }
         public int PricePromotion { get; set; }
-        public string Image { get; set; }
+        public string UrlImage { get; set; }
         public string Decription { get; set; }
-
+        //public IFormFile Image { get; set; }
         public long ModifyDate { get; set; }
         public bool IsDelete { get; set; }
         public bool Status { get; set; }

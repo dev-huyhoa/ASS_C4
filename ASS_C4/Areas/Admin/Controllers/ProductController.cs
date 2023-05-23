@@ -8,20 +8,18 @@ using ASS_C4.Areas.Admin.ViewModel;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using ASS_C4.Helper;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+using static System.Net.Mime.MediaTypeNames;
+using System.IO;
+
 namespace ASS_C4.Areas.Admin.Controllers
 {
     [Area("Admin")]
 
     public class ProductController : Controller
     {
-        private const string CLOUD_NAME = "ddv2idi9d";
-        private const string API_KEY = "687389283419199";
-        private const string API_SECRET = "BOCNwD1_s-DwP67WIkwNkuURBtE";
-        private static Cloudinary cloudinary;
-        private static string publicId;
-        private static string link;
         private readonly OldSkoolContext _context;
         public ProductController(OldSkoolContext context)
         {
@@ -47,7 +45,7 @@ namespace ASS_C4.Areas.Admin.Controllers
                                  {
                                      IdProduct = x.IdProduct,
                                      NameProduct = x.NameProduct,
-                                     Image = x.Image,
+                                     UrlImage = x.Image,
                                      Price = x.Price,
                                      PricePromotion = x.PricePromotion,
                                      Decription = x.Decription,
@@ -75,7 +73,7 @@ namespace ASS_C4.Areas.Admin.Controllers
         // POST: RolesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromForm] ProductViewModel productView)
+        public async Task<IActionResult> Create([FromForm] ProductViewModel productView, ICollection<IFormFile> Image)
         {
             try
             {
@@ -86,7 +84,11 @@ namespace ASS_C4.Areas.Admin.Controllers
                     product.NameProduct = productView.NameProduct;
                     product.Price = productView.Price;
                     product.PricePromotion = productView.PricePromotion;
-                    product.Image = productView.Image;
+                    foreach (var file in Image)
+                    {
+                        product.Image = Ultility.WriteFile(file, "Product", product.IdProduct.ToString());
+
+                    }
                     product.Decription = productView.Decription;
                     product.CategoryId = productView.CategoryId;
                     product.Status = true;
@@ -129,7 +131,7 @@ namespace ASS_C4.Areas.Admin.Controllers
                                IdProduct = x.IdProduct,
                                CategoryId = x.CategoryId,
                                NameProduct = x.NameProduct,
-                               Image = x.Image,
+                               UrlImage = x.Image,
                                Price = x.Price,
                                PricePromotion = x.PricePromotion,
                                Decription = x.Decription,
@@ -145,24 +147,16 @@ namespace ASS_C4.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Edit(ProductViewModel product, ICollection<IFormFile> files)
         {
-
+            
             // Xử lý cập nhật sản phẩm
-            var uploadParams = new ImageUploadParams()
-            {
-                Folder = "Product",
-                File = new FileDescription(product.FullPath),
-                UseFilename = true
-            };
-
-            var uploadResult = cloudinary.Upload(uploadParams);
-            publicId = $"lia/Folder/{uploadResult.PublicId}";
-            link = uploadResult.Uri.ToString();
-
             var result = _context.Products.Find(product.IdProduct);
             result.NameProduct = product.NameProduct;
             result.PricePromotion = product.PricePromotion;
             result.Price = product.Price;
-            result.Image = link;
+            foreach (var file in files)
+            {
+                result.Image = Ultility.WriteFile(file, "Product", product.IdProduct.ToString());
+            }
             result.CategoryId = product.CategoryId;
             result.Status = false;
             result.IsDelete = false;
@@ -180,7 +174,7 @@ namespace ASS_C4.Areas.Admin.Controllers
 
             _context.SaveChanges();
             return RedirectToAction("Index");
-        }
+        }        
 
         // POST: RolesController/Delete/5
         [Route("Product/Delete/{id}")]
