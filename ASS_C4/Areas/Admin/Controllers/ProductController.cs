@@ -8,13 +8,20 @@ using ASS_C4.Areas.Admin.ViewModel;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
-
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 namespace ASS_C4.Areas.Admin.Controllers
 {
     [Area("Admin")]
 
     public class ProductController : Controller
     {
+        private const string CLOUD_NAME = "ddv2idi9d";
+        private const string API_KEY = "687389283419199";
+        private const string API_SECRET = "BOCNwD1_s-DwP67WIkwNkuURBtE";
+        private static Cloudinary cloudinary;
+        private static string publicId;
+        private static string link;
         private readonly OldSkoolContext _context;
         public ProductController(OldSkoolContext context)
         {
@@ -138,13 +145,24 @@ namespace ASS_C4.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Edit(ProductViewModel product, ICollection<IFormFile> files)
         {
-            
+
             // Xử lý cập nhật sản phẩm
+            var uploadParams = new ImageUploadParams()
+            {
+                Folder = "Product",
+                File = new FileDescription(product.FullPath),
+                UseFilename = true
+            };
+
+            var uploadResult = cloudinary.Upload(uploadParams);
+            publicId = $"lia/Folder/{uploadResult.PublicId}";
+            link = uploadResult.Uri.ToString();
+
             var result = _context.Products.Find(product.IdProduct);
             result.NameProduct = product.NameProduct;
             result.PricePromotion = product.PricePromotion;
             result.Price = product.Price;
-            result.Image = product.Image;
+            result.Image = link;
             result.CategoryId = product.CategoryId;
             result.Status = false;
             result.IsDelete = false;
