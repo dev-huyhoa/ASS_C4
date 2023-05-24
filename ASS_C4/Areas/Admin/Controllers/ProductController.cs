@@ -91,7 +91,7 @@ namespace ASS_C4.Areas.Admin.Controllers
                     }
                     product.Decription = productView.Decription;
                     product.CategoryId = productView.CategoryId;
-                    product.Status = true;
+                    
                     product.ModifyDate = Helper.Ultility.ConvertDatetimeToUnixTimeStampMiliSecond(DateTime.Now);
                     product.IsDelete = false;
                     _context.Add(product);
@@ -100,6 +100,15 @@ namespace ASS_C4.Areas.Admin.Controllers
                     listProduct.IdListProduct = new Guid();
                     listProduct.ProductId = product.IdProduct;
                     listProduct.Quantity = productView.Quantity;
+                    if (listProduct.Quantity == 0)
+                    {
+                        product.Status = false;
+                    }
+                    else
+                    {
+                        product.Status = true;
+
+                    }
                     listProduct.Size = productView.Size;
                     _context.Add(listProduct);
 
@@ -158,7 +167,6 @@ namespace ASS_C4.Areas.Admin.Controllers
                 result.Image = Ultility.WriteFile(file, "Product", product.IdProduct.ToString());
             }
             result.CategoryId = product.CategoryId;
-            result.Status = false;
             result.IsDelete = false;
             result.Decription = product.Decription;
             _context.Products.Update(result);
@@ -170,6 +178,15 @@ namespace ASS_C4.Areas.Admin.Controllers
                                
             ListProduct.Size = product.Size;
             ListProduct.Quantity = product.Quantity;
+            if (product.Quantity == 0)
+            {
+                result.Status = false;
+            }
+            else
+            {
+                result.Status = true;
+
+            }
             _context.ListProduct.Update(ListProduct);
 
             _context.SaveChanges();

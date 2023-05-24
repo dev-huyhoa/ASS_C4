@@ -32,8 +32,8 @@
                         <i class="fas fa-cog"></i>Quản Lý Chức Vụ
                     </a>
                 </li>
-                <li>
-                    <a href="map.html">
+                <li class="@(ViewBag.Active == "Employee" ? "active": "")">
+                    <a asp-area="Admin" asp-controller="Employee" asp-action="Index">
                         <i class="fas fa-user"></i>Quản Lý Nhân Viên
                     </a>
                 </li>
