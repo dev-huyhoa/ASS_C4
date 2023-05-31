@@ -24,20 +24,40 @@ namespace ASS_C4.Areas.Admin.Controllers
         {
             ViewBag.Active = "Employee";
         }
+        public void ViewAllRoles()
+        {
+            ViewBag.ViewAllRoles = (from x in _context.Roles
+                                    select x).ToList();
+             
+        }
         // GET: RolesController
         public async Task<ActionResult> Index()
         {
+            ViewAllRoles();
             ViewBagActive();
-            var product = await (from x in _context.Employees
+            var emp = await (from x in _context.Employees
+                             join y in _context.Roles
+                             on x.RoleId equals y.IdRole
                            where x.IsDelete == false
-                           select x).FirstOrDefaultAsync();
-            ViewBag.product = product;
+                           select new EmployeeViewModel
+                           {
+                               NameEmployee = x.NameEmployee,
+                               Email = x.Email,
+                               Address = x.Address,
+                               Phone = x.Phone,
+                               Birthday = x.Birthday,
+                               UrlImage = x.Image,
+                               IsActice = x.IsActice,
+                               IsOnline = x.IsOnline,
+                               NameRole = y.NameRole
+                           }).ToListAsync();
+            ViewBag.employee = emp;
             return View();
         }
         // GET: RolesController/Create
         public ActionResult Create()
         {
-            ViewBag.Active = "Product";
+            ViewBag.Active = "Employee";
             return View();
         }
         // POST: RolesController/Create
@@ -54,7 +74,7 @@ namespace ASS_C4.Areas.Admin.Controllers
                     emp.NameEmployee = employee.NameEmployee;
                     emp.Address = employee.Address;
                     emp.Phone = employee.Phone;
-                    emp.Birthday = employee.Birthday;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ) ;
+                    emp.Birthday = employee.Birthday;
                     emp.Email = employee.Email;
                     emp.IsActice = true;
                     emp.IsOnline = false;
@@ -98,10 +118,10 @@ namespace ASS_C4.Areas.Admin.Controllers
             result.NameEmployee = emp.NameEmployee;
             result.Address = emp.Address;
             result.Phone = emp.Phone;
-            result.Birthday = emp.Birthday;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ) ;
+            result.Birthday = emp.Birthday;
             result.Email = emp.Email;
-            //result.IsActice = true;
-            //result.IsOnline = false;
+            result.IsActice = true;
+            result.IsOnline = false;
             result.RoleId = emp.RoleId;
             foreach (var file in files)
             {
@@ -113,16 +133,16 @@ namespace ASS_C4.Areas.Admin.Controllers
         }
 
         // POST: RolesController/Delete/5
-        [Route("Product/Delete/{id}")]
+        [Route("Employee/Delete/{id}")]
         [HttpPost]
         public JsonResult Delete(Guid id)
         {
             // Code to delete item with id in the database
             bool result = false;
-            var product = _context.Employees.FirstOrDefault(s => s.IdEmployee == id);
-            if (product != null)
+            var emp = _context.Employees.FirstOrDefault(s => s.IdEmployee == id);
+            if (emp != null)
             {
-                product.IsDelete = true;
+                emp.IsDelete = true;
                 _context.SaveChanges();
                 result = true;
             }

@@ -1,7 +1,7 @@
-﻿@model ASS_C4.Models.Product
+﻿@model ASS_C4.Models.Employee
 
 @{
-    ViewData["Title"] = "Product";
+    ViewData["Title"] = "Employee";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 <style>
@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-md-12">
             <!-- DATA TABLE -->
-            <h3 class="title-5 m-b-35">Quản lý chức vụ</h3>
+            <h3 class="title-5 m-b-35">Quản lý nhân viên</h3>
             <div class="table-data__tool">
                 <div class="table-data__tool-left">
                     <div class="rs-select2--light rs-select2--md">
@@ -58,22 +58,25 @@
                                 STT
                             </th>
                             <th>
-                                TÊN SẢN PHẨM
+                                TÊN NHÂN VIÊN
                             </th>
-                            <th>
+                   @*         <th>
                                 HÌNH ẢNH
-                            </th>
+                            </th>*@
                             <th>
-                                SỐ LƯỢNG
+                                EMAIL
                             </th>
+@*                            <th>
+                                ĐỊA CHỈ
+                            </th>*@
                             <th>
-                                SIZE
-                            </th>
-                            <th>
-                                GIÁ
+                                ĐIỆN THOẠI
                             </th>
                             <th>
                                 TRẠNG THÁI
+                            </th>
+                            <th>
+                                CHỨC VỤ
                             </th>
                             <th>
                             </th>
@@ -83,44 +86,45 @@
                         @{
                             int rowNo = 0;
                         }
-                        @if (ViewBag.product != null)
+                        @if (ViewBag.employee != null)
                         {
-                            @foreach (var item in ViewBag.product)
+                            @foreach (var item in ViewBag.employee)
                             {
-                                <tr class="tr-shadow item-@item.IdProduct">
+                                <tr class="tr-shadow item-@item.IdEmployee">
                                     <td>
                                         @(rowNo += 1)
                                     </td>
                                     <td>
-                                        @item.NameProduct
+                                        @item.NameEmployee
                                     </td>
-                                    <td>
+                              @*      <td>
                                         <img src="@item.UrlImage" alt="Hình ảnh" style="width: 154px; height: 130px;">
+                                    </td>*@
+                                    <td>
+                                        @item.Email
                                     </td>
                                     <td>
-                                        @item.Quantity
+                                        @item.Phone
                                     </td>
                                     <td>
-                                        @item.Size
+                                        @(@item.IsActice ? "Đã kích hoạt" : "Chưa kích hoạt")
                                     </td>
                                     <td>
-                                        @string.Format("{0:N0}", item.Price) vnđ
-                                    </td>
-                                    <td style="color: @(item.Status ? "green" : "red")">
-                                        @(item.Status ? "Còn hàng" : "Hết hàng")
-                                    </td>
+                                        @item.NameRole
+@*                                       
+*@                                    </td>
 
                                     <td>
                                         <div class="table-data-feature">
                                             <button class="edit-btn item"
                                                     data-toggle="modal" data-target="#editModal"
-                                                    data-id="@item.IdProduct"
+                                                    data-id="@item.IdEmployee"
                                                     data-placement="top" title="Sửa">
                                                 <i class="zmdi zmdi-edit"></i>
                                             </button>
 
-                                            <button class="item" id="showModal" href="@Url.Action("Delete", "Product", new {id = item.IdProduct})"
-                                                    data-toggle="modal" data-target="#deleteModal" onclick="Confirm('@item.IdProduct')"
+                                            <button class="item" id="showModal" href="@Url.Action("Delete", "Employee", new {id = item.IdEmployee})"
+                                                    data-toggle="modal" data-target="#deleteModal" onclick="Confirm('@item.IdEmployee')"
                                                     data-placement="top" title="Xóa">
                                                 <i class="zmdi zmdi-delete"></i>
                                             </button>
@@ -134,7 +138,7 @@
                 </table>
             </div>
             <!-- END DATA TABLE -->
-            <input type="hidden" id="productId" style="color:red" />
+            <input type="hidden" id="employeeId" style="color:red" />
         </div>
     </div>
     <div class="row">
@@ -162,7 +166,7 @@
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group has-success">
                                 <label for="cc-payment" class="control-label mb-1">Tên sản phẩm (*)</label>
-                                <input id="cc-pament" name="NameProduct" type="text" class="form-control" aria-required="true" aria-invalid="false">
+                                <input id="cc-pament" name="NameEmployee" type="text" class="form-control" aria-required="true" aria-invalid="false">
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
@@ -237,7 +241,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="largeModalLabel">EDIT PRODUCT</h5>
+                <h5 class="modal-title" id="largeModalLabel">EDIT EMPLOYEE</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -248,33 +252,33 @@
                     <input type="hidden" id="editIdCategory">
 
                     <div class="form-group has-success">
-                        <label for="cc-payment" class="control-label mb-1">Tên sản phẩm (*)</label>
+                        <label for="cc-payment" class="control-label mb-1">Tên nhân viên (*)</label>
                         <input type="text" class="form-control" id="editName" required>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Size (*)</label>
-                                    <input id="editSize" name="Size" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                    <label for="cc-payment" class="control-label mb-1">Email (*)</label>
+                                    <input id="editEmail" name="Size" type="number" class="form-control" aria-required="true" aria-invalid="false">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Số lượng (*)</label>
-                                    <input id="editQuantity" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                    <label for="cc-payment" class="control-label mb-1">Số điện thoại (*)</label>
+                                    <input id="editPhone" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Giá (*)</label>
-                                    <input id="editPrice" name="Price" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                    <label for="cc-payment" class="control-label mb-1">Ngày sinh (*)</label>
+                                    <input id="editBirthday" name="Price" type="number" class="form-control" aria-required="true" aria-invalid="false">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Giá khuyến mãi (*)</label>
-                                    <input id="editPricePromotion" name="PricePromotion" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                    <label for="cc-payment" class="control-label mb-1">Tình trạng (*)</label>
+                                    <input id="editActive" name="PricePromotion" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
                                 </div>
                             </div>
                         </div>
@@ -283,13 +287,13 @@
                                 <label for="cc-payment" class="control-label mb-1">Chọn hình ảnh (*)</label>
                                 <input id="editImage" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
                                 <br />
-                                <label for="category" class="control-label mb-1">Danh mục</label>
+                                <label for="category" class="control-label mb-1">Chức vụ</label>
                                 <select id="editCategory" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
-                                    @if (ViewBag.viewAllCategory != null)
+                                    @if (ViewBag.ViewAllRoles != null)
                                     {
-                                        @foreach (var category in ViewBag.viewAllCategory)
+                                        @foreach (var category in ViewBag.ViewAllRoles)
                                         {
-                                            <option value="@category.IdCategory">@category.NameCategory</option>
+                                            <option value="@category.IdRole">@category.NameRole</option>
                                         }
                                     }
                                 </select>
@@ -298,8 +302,8 @@
                                 <img class="ImagePreview" id="editImagePreview" src="" />
                             </div>
                         </div>
-                        <label for="cc-name" class="control-label mb-1">Mô tả</label>
-                        <textarea id="editDescription" name="Description" class="form-control cc-name valid" data-val="true"
+                        <label for="cc-name" class="control-label mb-1">Địa chỉ</label>
+                        <textarea id="editAddress" name="Description" class="form-control cc-name valid" data-val="true"
                                   data-val-required="Please enter the name on card" autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
                                 </textarea>
 
@@ -407,22 +411,22 @@
         var id = $(this).data('id').toString();
         console.log(id);
         $.ajax({
-            url: 'Product/Edit/' + id,
+            url: 'Employee/Edit/' + id,
             type: 'GET',
             success: function (result) {
                 console.log(result);
-                $.each(result, function (index, product) {
-                    $('#editId').val(product.idProduct);
-                    $('#editName').val(product.nameProduct);
-                    $('#editPrice').val(product.price);
-                    $('#editPricePromotion').val(product.pricePromotion);
+                $.each(result, function (index, employee) {
+                    $('#editId').val(employee.idEmployee);
+                    $('#editName').val(employee.nameEmployee);
+                    $('#editPrice').val(employee.price);
+                    $('#editPricePromotion').val(employee.pricePromotion);
                     //$('#selectedImage').text(product.urlImage);
-                    $('#editImagePreview').attr('src', product.urlImage);
+                    $('#editImagePreview').attr('src', employee.urlImage);
                     //$('#editStatus').val(product.status ? 'Còn hàng' : 'Hết h').prop('selected', true); console.log(product.status);
-                    $('#editDescription').val(product.description);
-                    $('#editCategory').val(product.categoryId);
-                    $('#editQuantity').val(product.quantity);
-                    $('#editSize').val(product.size);
+                    $('#editDescription').val(employee.description);
+                    $('#editCategory').val(employee.categoryId);
+                    $('#editQuantity').val(employee.quantity);
+                    $('#editSize').val(employee.size);
                 });
             }
         });
