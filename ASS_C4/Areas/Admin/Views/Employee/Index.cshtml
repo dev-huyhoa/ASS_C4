@@ -1,5 +1,6 @@
 ﻿@model ASS_C4.Models.Employee
-
+@using ASS_C4.Areas.Admin.ViewModel;
+@using PagedList
 @{
     ViewData["Title"] = "Employee";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -60,15 +61,15 @@
                             <th>
                                 TÊN NHÂN VIÊN
                             </th>
-                            @*         <th>
-                            HÌNH ẢNH
-                            </th>*@
+                            <!-- <th>
+                                HÌNH ẢNH
+                            </th> -->
                             <th>
                                 EMAIL
                             </th>
-                            @*                            <th>
-                            ĐỊA CHỈ
-                            </th>*@
+                            <!-- <th>
+                                ĐỊA CHỈ
+                            </th> -->
                             <th>
                                 ĐIỆN THOẠI
                             </th>
@@ -97,10 +98,9 @@
                                     <td>
                                         @item.NameEmployee
                                     </td>
-
-                                    @*      <td>
-                            <img src="@item.UrlImage" alt="Hình ảnh" style="width: 154px; height: 130px;">
-                            </td>*@
+                                    <!-- <td>
+                                        <img src="@item.UrlImage" alt="Hình ảnh" style="width: 154px; height: 130px;">
+                                    </td> -->
                                     <td>
                                         @item.Email
                                     </td>
@@ -121,7 +121,6 @@
                                                     data-placement="top" title="Sửa">
                                                 <i class="zmdi zmdi-edit"></i>
                                             </button>
-
                                             <button class="item" id="showModal" href="@Url.Action("Delete", "Employee", new {id = item.IdEmployee})"
                                                     data-toggle="modal" data-target="#deleteModal" onclick="Confirm('@item.IdEmployee')"
                                                     data-placement="top" title="Xóa">
@@ -136,6 +135,30 @@
                     </tbody>
                 </table>
             </div>
+            </br>
+            @if (ViewBag.employee != null)
+            {
+                var pager = ViewBag.employee as IPagedList<EmployeeViewModel>;
+
+                <nav aria-label="...">
+                    <ul class="pagination justify-content-center">
+                        <!-- Thêm lớp justify-content-center để căn giữa -->
+                        <li class="page-item @(pager.HasPreviousPage ? "" : "disabled")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = pager.PageNumber - 1 })" tabindex="-1">Previous</a>
+                        </li>
+                        @for (int i = 1; i <= pager.PageCount; i++)
+                        {
+                            <li class="page-item @(pager.PageNumber == i ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i <span class="sr-only">(current)</span></a>
+                            </li>
+                        }
+                        <li class="page-item @(pager.HasNextPage ? "" : "disabled")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = pager.PageNumber + 1 })">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+
             <!-- END DATA TABLE -->
             <input type="hidden" id="employeeId" style="color:red" />
         </div>
@@ -378,6 +401,7 @@
                             icon: 'success',
                             title: 'Xóa thành công'
                         });
+                        location.reload(); // Tải lại trang
                     }
                     else {
                         alert("Có lỗi xảy ra !");
@@ -388,11 +412,11 @@
     });
 
     var Confirm = function (IdEmployee) {
-        $("#productId").val(IdProduct);
+        $("#employeeId").val(IdEmployee);
         $("#deleteModal").modal('show');
     }
 
-    // Edit Product
+    // Edit 
     $('#editImage').change(function () {
         var file = $(this)[0].files[0];
         var fileName = file ? file.name : "";

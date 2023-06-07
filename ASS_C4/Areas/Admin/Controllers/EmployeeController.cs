@@ -8,7 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using Microsoft.EntityFrameworkCore;
-
+using System.Net.NetworkInformation;
+using PagedList;
+using PagedList.Mvc;
 namespace ASS_C4.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -30,31 +32,37 @@ namespace ASS_C4.Areas.Admin.Controllers
                                     select x).ToList();
              
         }
-        // GET: RolesController
-        public async Task<ActionResult> Index()
+
+        public async Task<ActionResult> Index(int? page)
         {
+            int pageSize = 4; // Number of items displayed per page
+            int pageNumber = (page ?? 1);
+
             ViewAllRoles();
             ViewBagActive();
+
             var emp = await (from x in _context.Employees
-                             join y in _context.Roles
-                             on x.RoleId equals y.IdRole
-                           where x.IsDelete == false
-                           select new EmployeeViewModel
-                           {
-                               IdEmployee = x.IdEmployee,
-                               NameEmployee = x.NameEmployee,
-                               Email = x.Email,
-                               Address = x.Address,
-                               Phone = x.Phone,
-                               Birthday = x.Birthday,
-                               UrlImage = x.Image,
-                               IsActice = x.IsActice,
-                               IsOnline = x.IsOnline,
-                               NameRole = y.NameRole
-                           }).ToListAsync();
-            ViewBag.employee = emp;
+                             join y in _context.Roles on x.RoleId equals y.IdRole
+                             where x.IsDelete == false
+                             select new EmployeeViewModel
+                             {
+                                 IdEmployee = x.IdEmployee,
+                                 NameEmployee = x.NameEmployee,
+                                 Email = x.Email,
+                                 Address = x.Address,
+                                 Phone = x.Phone,
+                                 Birthday = x.Birthday,
+                                 UrlImage = x.Image,
+                                 IsActice = x.IsActice,
+                                 IsOnline = x.IsOnline,
+                                 NameRole = y.NameRole
+                             }).ToListAsync();
+
+            ViewBag.employee = emp.ToPagedList(pageNumber, pageSize);
+
             return View();
         }
+
         // GET: RolesController/Create
         public ActionResult Create()
         {
