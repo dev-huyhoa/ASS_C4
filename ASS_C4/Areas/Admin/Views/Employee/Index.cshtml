@@ -164,60 +164,61 @@
                         <form asp-action="Create" method="post" novalidate="novalidate" enctype="multipart/form-data">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group has-success">
-                                <label for="cc-payment" class="control-label mb-1">Tên sản phẩm (*)</label>
-                                <input id="cc-pament" name="NameEmployee" type="text" class="form-control" aria-required="true" aria-invalid="false">
+                                <label for="cc-payment" class="control-label mb-1">Tên nhân viên (*)</label>
+                                <input type="text" class="form-control" id="editName" required>
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label for="cc-payment" class="control-label mb-1">Size (*)</label>
-                                            <input id="cc-pament" name="Size" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                            <label for="cc-payment" class="control-label mb-1">Email (*)</label>
+                                            <input id="editEmail" name="Size" type="text" class="form-control" aria-required="true" aria-invalid="false">
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label for="cc-payment" class="control-label mb-1">Số lượng (*)</label>
-                                            <input id="cc-payment" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                            <label for="cc-payment" class="control-label mb-1">Số điện thoại (*)</label>
+                                            <input id="editPhone" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label for="cc-payment" class="control-label mb-1">Giá (*)</label>
-                                            <input id="cc-pament" name="Price" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                            <label for="cc-payment" class="control-label mb-1">Ngày sinh (*)</label>
+                                            <input id="editBirthday" name="Price" type="datetime-local" class="form-control" aria-required="true" aria-invalid="false">
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label for="cc-payment" class="control-label mb-1">Giá khuyến mãi (*)</label>
-                                            <input id="cc-payment" name="PricePromotion" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                            <label for="cc-payment" class="control-label mb-1">Tình trạng (*)</label>
+                                            <select id="editActive" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                                <option value="True">Đã kích hoạt</option>
+                                                <option value="False">Chưa kích hoạt</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <label for="cc-payment" class="control-label mb-1">Chọn Hình Ảnh (*)</label>
-                                        <input id="Image" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
-                                        <span id="selectedImage"></span>
-                                    </div>
-                                    <div class="col-6">
-                                        <label for="category" class="control-label mb-1">Chọn danh mục (*)</label>
-                                        <select id="category" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
-                                            <option value="">-- Chọn danh mục --</option>
-                                            @if (ViewBag.viewAllCategory != null)
+                                        <label for="cc-payment" class="control-label mb-1">Chọn hình ảnh (*)</label>
+                                        <input id="editImage" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
+                                        <br />
+                                        <label for="category" class="control-label mb-1">Chức vụ</label>
+                                        <select id="editRole" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                            @if (ViewBag.ViewAllRoles != null)
                                             {
-                                                @foreach (var category in ViewBag.viewAllCategory)
+                                                @foreach (var category in ViewBag.ViewAllRoles)
                                                 {
-                                                    <option value="@category.IdCategory">@category.NameCategory</option>
+                                                    <option value="@category.IdRole">@category.NameRole</option>
                                                 }
                                             }
                                         </select>
                                     </div>
+                                    <div class="col-6">
+                                        <img class="ImagePreview" id="editImagePreview" src="" />
+                                    </div>
                                 </div>
-
-
-                                <label for="cc-name" class="control-label mb-1">Mô tả</label>
-                                <textarea id="cc-name" name="Description" class="form-control cc-name valid" data-val="true"
+                                <label for="cc-name" class="control-label mb-1">Địa chỉ</label>
+                                <textarea id="editAddress" name="Description" class="form-control cc-name valid" data-val="true"
                                           data-val-required="Please enter the name on card" autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
                                 </textarea>
 
