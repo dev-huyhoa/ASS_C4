@@ -165,18 +165,18 @@
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group has-success">
                                 <label for="cc-payment" class="control-label mb-1">Tên nhân viên (*)</label>
-                                <input type="text" class="form-control" id="editName" required>
+                                <input name="NameEmployee" type="text" class="form-control" id="cc-pament" required>
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="cc-payment" class="control-label mb-1">Email (*)</label>
-                                            <input id="editEmail" name="Size" type="text" class="form-control" aria-required="true" aria-invalid="false">
+                                            <input id="cc-pament" name="Email" type="text" class="form-control" aria-required="true" aria-invalid="false">
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="cc-payment" class="control-label mb-1">Số điện thoại (*)</label>
-                                            <input id="editPhone" name="Quantity" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                            <input id="cc-pament" name="Phone" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
                                         </div>
                                     </div>
                                 </div>
@@ -184,13 +184,13 @@
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="cc-payment" class="control-label mb-1">Ngày sinh (*)</label>
-                                            <input id="editBirthday" name="Price" type="datetime-local" class="form-control" aria-required="true" aria-invalid="false">
+                                            <input id="cc-pament" name="Birthday" type="datetime-local" class="form-control" aria-required="true" aria-invalid="false">
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="cc-payment" class="control-label mb-1">Tình trạng (*)</label>
-                                            <select id="editActive" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                            <select id="cc-pament" name="isActive" class="form-control" aria-required="true" aria-invalid="false">
                                                 <option value="True">Đã kích hoạt</option>
                                                 <option value="False">Chưa kích hoạt</option>
                                             </select>
@@ -200,10 +200,12 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="cc-payment" class="control-label mb-1">Chọn hình ảnh (*)</label>
-                                        <input id="editImage" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
+                                        <input id="cc-pament" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
                                         <br />
+                                    </div>
+                                    <div class="col-6">
                                         <label for="category" class="control-label mb-1">Chức vụ</label>
-                                        <select id="editRole" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                        <select id="cc-pament" name="RoleId" class="form-control" aria-required="true" aria-invalid="false">
                                             @if (ViewBag.ViewAllRoles != null)
                                             {
                                                 @foreach (var category in ViewBag.ViewAllRoles)
@@ -213,20 +215,17 @@
                                             }
                                         </select>
                                     </div>
-                                    <div class="col-6">
-                                        <img class="ImagePreview" id="editImagePreview" src="" />
-                                    </div>
                                 </div>
                                 <label for="cc-name" class="control-label mb-1">Địa chỉ</label>
-                                <textarea id="editAddress" name="Description" class="form-control cc-name valid" data-val="true"
-                                          data-val-required="Please enter the name on card" autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
+                                <textarea id="cc-pament" name="Address" class="form-control cc-name valid" data-val="true"
+                                          autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error">
                                 </textarea>
 
                                 <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" value="Create" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
-                                <button type="submit" class="btn btn-primary" onclick="return validateForm()">Thêm mới</button>
+                                <button type="submit" class="btn btn-primary">Thêm mới</button>
                             </div>
                         </form>
                     </div>
@@ -491,24 +490,24 @@
         return error;
     }
 
-    function file() {
-        const fileInput = document.getElementById('editImage');
-        fileInput.addEventListener('change', (event) => {
-            const fullPath = event.target.value; // Full path (not accessible in modern browsers)
-            const fileName = event.target.files[0].name; // File name
-            formData.append('FullPath', fullPath);
+    //function file() {
+    //    const fileInput = document.getElementById('editImage');
+    //    fileInput.addEventListener('change', (event) => {
+    //        const fullPath = event.target.value; // Full path (not accessible in modern browsers)
+    //        const fileName = event.target.files[0].name; // File name
+    //        formData.append('FullPath', fullPath);
 
-            console.log('Full Path:', fullPath);
-            console.log('File Name:', fileName);
-        });
-    }
+    //        console.log('Full Path:', fullPath);
+    //        console.log('File Name:', fileName);
+    //    });
+    //}
     // Edit
     $('#editBtn').click(function (e) {
         e.stopPropagation();
         e.preventDefault();
         let active = $('#editActive').val();
 
-        console.log(active,'123');
+        console.log(active, '123');
         // Remove error messages before rechecking
         $('.error-message').remove();
         file();

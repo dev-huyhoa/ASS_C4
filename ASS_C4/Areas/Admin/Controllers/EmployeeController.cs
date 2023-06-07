@@ -64,7 +64,7 @@ namespace ASS_C4.Areas.Admin.Controllers
         // POST: RolesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromForm] Employee employee, ICollection<IFormFile> Image)
+        public async Task<IActionResult> Create([FromForm] CreateUpdateEmployeeViewModel employee, ICollection<IFormFile> Image)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace ASS_C4.Areas.Admin.Controllers
                     emp.NameEmployee = employee.NameEmployee;
                     emp.Address = employee.Address;
                     emp.Phone = employee.Phone;
-                    emp.Birthday = employee.Birthday;
+                    emp.Birthday = Ultility.ConvertDatetimeToUnixTimeStampMiliSecond(employee.Birthday);
                     emp.Email = employee.Email;
                     emp.IsActice = true;
                     emp.IsOnline = false;
