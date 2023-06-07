@@ -41,6 +41,7 @@ namespace ASS_C4.Areas.Admin.Controllers
                            where x.IsDelete == false
                            select new EmployeeViewModel
                            {
+                               IdEmployee = x.IdEmployee,
                                NameEmployee = x.NameEmployee,
                                Email = x.Email,
                                Address = x.Address,
@@ -110,18 +111,16 @@ namespace ASS_C4.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Employee emp, ICollection<IFormFile> files)
+        public IActionResult Edit(CreateUpdateEmployeeViewModel emp, ICollection<IFormFile> files)
         {
-
             // Xử lý cập nhật nhân viên
             var result = _context.Employees.Find(emp.IdEmployee);
             result.NameEmployee = emp.NameEmployee;
             result.Address = emp.Address;
             result.Phone = emp.Phone;
-            result.Birthday = emp.Birthday;
+            result.Birthday =  Ultility.ConvertDatetimeToUnixTimeStampMiliSecond(emp.Birthday);
             result.Email = emp.Email;
-            result.IsActice = true;
-            result.IsOnline = false;
+            result.IsActice = emp.IsActice;
             result.RoleId = emp.RoleId;
             foreach (var file in files)
             {

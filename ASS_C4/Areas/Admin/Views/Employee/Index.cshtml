@@ -60,14 +60,14 @@
                             <th>
                                 TÊN NHÂN VIÊN
                             </th>
-                   @*         <th>
-                                HÌNH ẢNH
+                            @*         <th>
+                            HÌNH ẢNH
                             </th>*@
                             <th>
                                 EMAIL
                             </th>
-@*                            <th>
-                                ĐỊA CHỈ
+                            @*                            <th>
+                            ĐỊA CHỈ
                             </th>*@
                             <th>
                                 ĐIỆN THOẠI
@@ -97,9 +97,10 @@
                                     <td>
                                         @item.NameEmployee
                                     </td>
-                              @*      <td>
-                                        <img src="@item.UrlImage" alt="Hình ảnh" style="width: 154px; height: 130px;">
-                                    </td>*@
+
+                                    @*      <td>
+                            <img src="@item.UrlImage" alt="Hình ảnh" style="width: 154px; height: 130px;">
+                            </td>*@
                                     <td>
                                         @item.Email
                                     </td>
@@ -111,9 +112,7 @@
                                     </td>
                                     <td>
                                         @item.NameRole
-@*                                       
-*@                                    </td>
-
+                                    </td>
                                     <td>
                                         <div class="table-data-feature">
                                             <button class="edit-btn item"
@@ -258,7 +257,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="cc-payment" class="control-label mb-1">Email (*)</label>
-                                    <input id="editEmail" name="Size" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                    <input id="editEmail" name="Size" type="text" class="form-control" aria-required="true" aria-invalid="false">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -272,13 +271,16 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="cc-payment" class="control-label mb-1">Ngày sinh (*)</label>
-                                    <input id="editBirthday" name="Price" type="number" class="form-control" aria-required="true" aria-invalid="false">
+                                    <input id="editBirthday" name="Price" type="datetime-local" class="form-control" aria-required="true" aria-invalid="false">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="cc-payment" class="control-label mb-1">Tình trạng (*)</label>
-                                    <input id="editActive" name="PricePromotion" type="number" class="form-control" aria-required="true" aria-invalid="false" min="0">
+                                    <select id="editActive" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                        <option value="True">Đã kích hoạt</option>
+                                        <option value="False">Chưa kích hoạt</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -288,7 +290,7 @@
                                 <input id="editImage" name="Image" type="file" class="form-control" accept="image/*" aria-required="true" aria-invalid="false">
                                 <br />
                                 <label for="category" class="control-label mb-1">Chức vụ</label>
-                                <select id="editCategory" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
+                                <select id="editRole" name="CategoryId" class="form-control" aria-required="true" aria-invalid="false">
                                     @if (ViewBag.ViewAllRoles != null)
                                     {
                                         @foreach (var category in ViewBag.ViewAllRoles)
@@ -362,16 +364,16 @@
         });
 
         $("#btnDelete").click(function () {
-            var _id = $("#productId").val();
+            var _id = $("#employeeId").val();
             console.log(_id)
             $.ajax({
                 type: "POST",
-                url: "/Product/Delete/" + _id,
+                url: "/Employee/Delete/" + _id,
                 success: function (result) {
                     if (result) {
                         $("#deleteModal").modal('hide');
                         $(".item-" + _id).remove();
-                        $("#productId").val("null");
+                        $("#employeeId").val("null");
                         Toast.fire({
                             icon: 'success',
                             title: 'Xóa thành công'
@@ -385,7 +387,7 @@
         });
     });
 
-    var Confirm = function (IdProduct) {
+    var Confirm = function (IdEmployee) {
         $("#productId").val(IdProduct);
         $("#deleteModal").modal('show');
     }
@@ -407,6 +409,20 @@
         }
     });
 
+    //format ngày giờ sang timestamp
+    function formatTimestamp(timestamp) {
+        var date = new Date(timestamp * 1000);
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var formattedDate = year + '-' + month.toString().padStart(2, '0') + '-' + day.toString().padStart(2, '0');
+        var formattedTime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
+        var formattedDateTime = formattedDate + 'T' + formattedTime;
+        return formattedDateTime;
+    }
+
     $('.edit-btn').click(function () {
         var id = $(this).data('id').toString();
         console.log(id);
@@ -416,51 +432,54 @@
             success: function (result) {
                 console.log(result);
                 $.each(result, function (index, employee) {
-                    $('#editId').val(employee.idEmployee);
-                    $('#editName').val(employee.nameEmployee);
-                    $('#editPrice').val(employee.price);
-                    $('#editPricePromotion').val(employee.pricePromotion);
-                    //$('#selectedImage').text(product.urlImage);
-                    $('#editImagePreview').attr('src', employee.urlImage);
-                    //$('#editStatus').val(product.status ? 'Còn hàng' : 'Hết h').prop('selected', true); console.log(product.status);
-                    $('#editDescription').val(employee.description);
-                    $('#editCategory').val(employee.categoryId);
-                    $('#editQuantity').val(employee.quantity);
-                    $('#editSize').val(employee.size);
+                    $('#editId').val(result.idEmployee);
+                    $('#editName').val(result.nameEmployee);
+                    $('#editEmail').val(result.email);
+                    $('#editPhone').val(result.phone);
+                    $('#editAddress').val(result.address);
+                    $('#selectedImage').text(result.image);
+                    $('#editImagePreview').attr('src', result.image);
+                    $('#editActive').val(result.isActice ? 'True' : 'False').prop('selected', true);
+
+                    // Gọi hàm formatTimestamp để chuyển đổi timestamp thành định dạng ngày tháng
+                    var formattedDateTime = formatTimestamp(result.birthday);
+                    $('#editBirthday').val(formattedDateTime);
+                    $('#editRole').val(result.roleId);
                 });
             }
         });
     });
 
 
+
     function validateForm() {
         $('.error-message').remove();
         let error = false;
         if ($('#editName').val() === '') {
-            $('#editName').after('<span class="error-message">Vui nhập tên sản phẩm</span>');
+            $('#editName').after('<span class="error-message">Vui nhập tên nhân viên</span>');
             error = true;
         }
 
-        if ($('#editSize').val() === '') {
-            $('#editSize').after('<span class="error-message">Vui lòng nhập size</span>');
+        if ($('#editEmail').val() === '') {
+            $('#editEmail').after('<span class="error-message">Vui lòng nhập email</span>');
             error = true;
         }
 
-        if ($('#editQuantity').val() === '') {
-            $('#editQuantity').after('<span class="error-message">Vui lòng nhập số lượng</span>');
+        if ($('#editPhone').val() === '') {
+            $('#editPhone').after('<span class="error-message">Vui lòng nhập số điện thoại</span>');
             error = true;
         }
-        if ($('#editCategory').val() === '') {
-            $('#editCategory').after('<span class="error-message">Vui lòng chọn danh mục</span>');
+        if ($('#editAddress').val() === '') {
+            $('#editAddress').after('<span class="error-message">Vui lòng nhập địa chỉ</span>');
             error = true;
         }
-        if ($('#editPrice').val() === '') {
-            $('#editPrice').after('<span class="error-message">Vui lòng nhập giá</span>');
+        if ($('#editActive').val() === '') {
+            $('#editActive').after('<span class="error-message">Vui lòng chọn tình trạng</span>');
             error = true;
         }
 
-        if ($('#editPricePromotion').val() === '') {
-            $('#editPricePromotion').after('<span class="error-message">Vui lòng nhập giá khuyến mãi</span>');
+        if ($('#editBirthday').val() === '') {
+            $('#editBirthday').after('<span class="error-message">Vui lòng nhập ngày sinh</span>');
             error = true;
         }
 
@@ -482,11 +501,13 @@
             console.log('File Name:', fileName);
         });
     }
-    // Edit Product
+    // Edit
     $('#editBtn').click(function (e) {
         e.stopPropagation();
         e.preventDefault();
+        let active = $('#editActive').val();
 
+        console.log(active,'123');
         // Remove error messages before rechecking
         $('.error-message').remove();
         file();
@@ -495,33 +516,31 @@
         if (error == false) {
             let id = $('#editId').val();
             let name = $('#editName').val();
-            let price = $('#editPrice').val();
-            let pricePromotion = $('#editPricePromotion').val();
+            let email = $('#editEmail').val();
+            let phone = $('#editPhone').val();
             let files = $('#editImage')[0].files;
-            let status = $('#editStatus').val();
-            let idcategory = $('#editCategory').val();
-            let quantity = $('#editQuantity').val();
-            let size = $('#editSize').val();
-            let description = $('#editDescription').val();
-
+            let active = $('#editActive').val();
+            let birthday = $('#editBirthday').val();
+            let address = $('#editAddress').val();
+            let roleId = $('#editRole').val();
             // Create a FormData object
             let formData = new FormData();
-            formData.append('IdProduct', id);
-            formData.append('NameProduct', name);
-            formData.append('Price', price);
-            formData.append('PricePromotion', pricePromotion);
+            formData.append('IdEmployee', id);
+            formData.append('NameEmployee', name);
+            formData.append('Email', email);
+            formData.append('Phone', phone);
+            formData.append('RoleId', roleId);
+            formData.append('IsActice', active);
+
             for (let i = 0; i < files.length; i++) {
                 formData.append('files', files[0]);
             }
 
             formData.append('Status', status);
-            formData.append('categoryId', idcategory);
-            formData.append('Quantity', quantity);
-            formData.append('Size', size);
-            formData.append('Description', description);
-
+            formData.append('Birthday', birthday);
+            formData.append('Address', address);
             $.ajax({
-                url: 'Product/Edit',
+                url: 'Employee/Edit',
                 type: 'POST',
                 data: formData,
                 processData: false, // Important! Disable processing of data
@@ -535,7 +554,5 @@
             });
         }
     });
-
-
 
 </script>
